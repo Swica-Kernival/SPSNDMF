@@ -3,6 +3,7 @@ using System.Linq;
 using nadena.dev.ndmf;
 using nadena.dev.modular_avatar.core;
 using UnityEditor.Animations;
+using UnityEditor;
 using UnityEngine;
 using VF.Component;
 using VRC.SDK3.Avatars.Components;
@@ -71,6 +72,19 @@ namespace VF.Plugin.Passes {
             // Controllers → MA Merge Animator
             foreach (var kvp in output.Controllers) {
                 if (kvp.Value is AnimatorController ac) {
+                    if (kvp.Key == VRCAvatarDescriptor.AnimLayerType.FX) {
+                        foreach (var clip in ac.animationClips) {
+                            foreach (var binding in AnimationUtility.GetCurveBindings(clip)) {
+                                if (binding.type != typeof(Transform)) continue;
+                                var target = string.IsNullOrEmpty(binding.path)
+                                    ? avatarObj.transform : avatarObj.transform.Find(binding.path);
+                                if (target != null && spsCtx.OriginalTransforms != null
+                                    && !spsCtx.OriginalTransforms.Contains(target)) {
+                                    spsCtx.GeneratedFxTransformTargets.Add(target);
+                                }
+                            }
+                        }
+                    }
                     PreserveFirstLayerWeight(ac);
                     var merge = outputObj.AddComponent<ModularAvatarMergeAnimator>();
                     merge.animator = ac;

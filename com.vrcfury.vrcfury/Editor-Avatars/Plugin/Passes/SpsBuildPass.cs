@@ -1,4 +1,5 @@
 using System.IO;
+using System.Collections.Generic;
 using nadena.dev.ndmf;
 using UnityEditor;
 using VF.Builder;
@@ -75,6 +76,8 @@ namespace VF.Plugin.Passes {
             var spsCtx = context.GetState<SpsContext>();
             spsCtx.Injector = injector;
             spsCtx.AvatarOutput = output;
+            spsCtx.OriginalTransforms = new HashSet<UnityEngine.Transform>(
+                avatarObj.GetComponentsInChildren<UnityEngine.Transform>(true));
 
             // Run VRCFury's full build pipeline
             VRCFuryBuilder.RunForNdmf(avatarVf, injector);

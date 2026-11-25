@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using VF.Injector;
+using UnityEngine;
 
 namespace VF.Plugin {
     /// <summary>
@@ -9,6 +10,8 @@ namespace VF.Plugin {
     internal class SpsContext {
         public VRCFuryInjector Injector { get; set; }
         public NdmfAvatarOutput AvatarOutput { get; set; }
+        public HashSet<Transform> OriginalTransforms { get; set; }
+        public readonly HashSet<Transform> GeneratedFxTransformTargets = new HashSet<Transform>();
 
         /// <summary>
         /// Animator parameter renames that Modular Avatar will apply to the SPS output, captured
